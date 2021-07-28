@@ -17,21 +17,16 @@ public class UserService {
 
     public User add(User user) {
         System.out.println("UserService add ");
-        try {
-           return userDao.addUser(user);
-        } catch (Exception ex){
-            ex.printStackTrace();
-        }
-        return user;
+            return userDao.addUser(user);
     }
 
     public User get(long id) {
         System.out.println("UserService get ");
-        return userDao.getUserId(id);
+        return userDao.getUserById(id);
     }
 
     public boolean delete(long id) {
         System.out.println("UserService delete ");
-        return userDao.deleteUserId(id);
+        return userDao.deleteUserById(id);
     }
 }

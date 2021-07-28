@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller     // @Controller указывает, что данный класс играет роль контроллера.
-public class ThingsForTheTripController {
+public class AuthController {
 
     private UserService userService;
 

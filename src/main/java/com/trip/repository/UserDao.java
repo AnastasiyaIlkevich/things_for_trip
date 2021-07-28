@@ -6,7 +6,9 @@ public interface UserDao {
 
     User addUser(User user);
 
-    User getUserId(long id);
+    User getUserById(long id);
 
-    boolean deleteUserId(long id);
+    boolean deleteUserById(long id);
+
+    User getUserByName(User user);
 }
