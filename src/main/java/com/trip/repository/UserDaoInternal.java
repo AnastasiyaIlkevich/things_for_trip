@@ -18,7 +18,7 @@ public class UserDaoInternal implements UserDao {
     private JdbcTemplate jdbcTemplate;
 
     public User addUser(User user) {
-        User userDataBase = getUserByName(user);
+        User userDataBase = getUserByName(user.getName());
         if (userDataBase != null) {
             System.out.println("user уже существует");
             return userDataBase;
@@ -29,26 +29,15 @@ public class UserDaoInternal implements UserDao {
     }
 
     public User getUserById(long id) {
-        return jdbcTemplate.queryForObject(sqlGetId, (rs, rn) -> new User(rs.getLong("id"),
-                rs.getString("name"),
-                rs.getString("password"),
-                rs.getString("email")), id);
+        return jdbcTemplate.query(sqlGetId, new UserRowMapper(), id).stream().findAny().orElse(null);
     }
 
     public boolean deleteUserById(long id) {
         return jdbcTemplate.update(sqlDelete, id) > 0;
     }
 
-    public User getUserByName(User user) {
-        try {
-            return jdbcTemplate.queryForObject(sqlGetName, (rs, rn) -> new User(rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getString("password"),
-                    rs.getString("email")), user.getName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
+    public User getUserByName(String name) {
+        return jdbcTemplate.query(sqlGetName, new UserRowMapper(), name).stream().findAny().orElse(null);
     }
 }
 

@@ -10,5 +10,5 @@ public interface UserDao {
 
     boolean deleteUserById(long id);
 
-    User getUserByName(User user);
+    User getUserByName(String name);
 }
