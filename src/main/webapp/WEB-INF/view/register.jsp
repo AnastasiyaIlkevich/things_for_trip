@@ -1,7 +1,9 @@
 <%@ page isELIgnored="false"%>
+<html>
 <head>
 </head>
 <body>
+<h1>Message: ${mass}</h1>
 <div>
     <form modelAttribute="user" action="${pageContext.request.contextPath}/addUser" method="post">
 

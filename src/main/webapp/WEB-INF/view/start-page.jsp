@@ -12,8 +12,8 @@
     <button>Sing up</button>
   </form>
 
-  <form modelAttribute="userJSP" action="${pageContext.request.contextPath}/sing-in" method="get">
-    <button>Sign in</button>
+  <form modelAttribute="userJSP" action="${pageContext.request.contextPath}/login" method="get">
+    <button>Login</button>
   </form>
 </div>
 </body>
