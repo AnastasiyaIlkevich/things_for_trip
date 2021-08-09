@@ -3,10 +3,7 @@ package com.trip.model;
 
 import lombok.*;
 
-@Setter
-@Getter
-@ToString
-@NoArgsConstructor
+@Data
 public class User {
 
     private Long id;

@@ -1,5 +1,6 @@
 package com.trip.config;
 
+import com.trip.repository.UserDaoInternal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,9 +21,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     DataSource dataSource;
 
-    private final String sqlName = "select name,password, 'true' from users where name = ?";
-    private final String sqlRole = "select u.name, roles.name from users u " +
-            "join roles on u.roles_id = roles.id and u.name = ?";
+    @Autowired
+    UserDaoInternal userDaoInternal;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -34,8 +34,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         authenticationManagerBuilder.jdbcAuthentication()
                 .dataSource(dataSource)
-                .usersByUsernameQuery(sqlName)
-                .authoritiesByUsernameQuery(sqlRole)
+                .usersByUsernameQuery(userDaoInternal.getSqlSecurityConfigName())
+                .authoritiesByUsernameQuery(userDaoInternal.getSqlSecurityConfigRole())
                 .passwordEncoder(new BCryptPasswordEncoder());;
     }
 
