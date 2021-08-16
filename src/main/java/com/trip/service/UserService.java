@@ -16,13 +16,16 @@ public class UserService {
     }
 
     public User add(User user) {
-        System.out.println("UserService add ");
             return userDao.addUser(user);
     }
 
-    public User get(long id) {
+    public User getById(long id) {
         System.out.println("UserService get ");
         return userDao.getUserById(id);
+    }
+    public User getByName(String name) {
+        System.out.println("UserService get ");
+        return userDao.getUserByName(name);
     }
 
     public boolean delete(long id) {
