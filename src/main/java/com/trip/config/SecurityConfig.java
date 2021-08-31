@@ -1,15 +1,12 @@
 package com.trip.config;
 
-import com.trip.repository.UserDaoInternal;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
 import javax.sql.DataSource;
 
@@ -19,37 +16,39 @@ import javax.sql.DataSource;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    DataSource dataSource;
+    private final DataSource dataSource;
 
-    @Autowired
-    UserDaoInternal userDaoInternal;
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public SecurityConfig(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-
-        authenticationManagerBuilder.jdbcAuthentication()
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.jdbcAuthentication()
                 .dataSource(dataSource)
-                .usersByUsernameQuery(userDaoInternal.getSqlSecurityConfigName())
-                .authoritiesByUsernameQuery(userDaoInternal.getSqlSecurityConfigRole())
-                .passwordEncoder(new BCryptPasswordEncoder());;
+                .passwordEncoder(NoOpPasswordEncoder.getInstance())
+                .usersByUsernameQuery("select users.name ,users.password, active from users where name = ?")
+                .authoritiesByUsernameQuery("select users.name, roles.name from users" +
+                        "inner join user_roles on users.id = user_roles.user_id" +
+                        "inner join roles on user_roles.role_id = roles.id where users.name=?");
     }
 
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
-
-        httpSecurity
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
                 .authorizeRequests()
-                .antMatchers("/welcome").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/admin").hasRole("ADMIN")
+                .antMatchers("/",
+                        "/registration",
+                        "/user",
+                        "/admin",
+                        "/filter").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .logout();
-        httpSecurity.csrf().disable();
-
-
+                .formLogin()
+                .loginPage("/login")
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll();
     }
-
 }

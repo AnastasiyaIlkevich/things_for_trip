@@ -1,35 +1,20 @@
 package com.trip.service;
 
+
 import com.trip.model.User;
-import com.trip.repository.UserDao;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
-public class UserService {
+import java.util.List;
 
-    private final UserDao userDao;
 
-    @Autowired
-    public UserService(UserDao userDao) {
-        this.userDao = userDao;
-    }
+public interface UserService {
 
-    public User add(User user) {
-            return userDao.addUser(user);
-    }
+    void addNewUser(User user);
 
-    public User getById(long id) {
-        System.out.println("UserService get ");
-        return userDao.getUserById(id);
-    }
-    public User getByName(String name) {
-        System.out.println("UserService get ");
-        return userDao.getUserByName(name);
-    }
+    User findByName(String name);
 
-    public boolean delete(long id) {
-        System.out.println("UserService delete ");
-        return userDao.deleteUserById(id);
-    }
+    List<User> filter(String filter);
+
+    Iterable<User> findAll();
+
+    void delete(User user);
 }
